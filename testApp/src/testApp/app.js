@@ -1,21 +1,119 @@
 var numPerPage = 5;
 var sessionCart = [];
 var sessmodalInstance;
-//some comments 
-//second line of comments
+var modalInstance;
+var modalInstanceForReply;
 
-// third line
 
-function closeModal(win) {
-    if(win !== undefined) {
-    	win.close('close');
-    }
+
+function getNewNotifications($scope,$http){
+	$http.post('user/getNewNotifications/'+$scope.coach.coach_id).
+	success(function(data){
+		$scope.newNotifications = data;
+		fetchCounts($scope,$http,$scope.coach);
+	});
 }
-
 function fetchCounts($scope,$http,coach) {
  	// get all counts
 	$http.post('user/counts/'+coach.coach_id).
 		success(function(data) {
+			if (data != "") {
+				$scope.counts = data;
+				if(data.drillCountByTags != "") {
+					$scope.drillsByTags = data.drillCountByTags;
+
+};
+
+function changeMessageStatusToRead($scope,$http,messageId,coach){ 
+	
+	$http.post('user/changeMsgStatus/'+messageId).
+	success(function(data) {
+		fetchUnreadMessages($scope,$http,coach);
+		fetchAllMessages($scope,$http,coach);
+		fetchCounts($scope,$http,coach);
+	});
+function fetchCues($scope,$http,coach,count,currPage,perPage) {
+	// get all drills
+	$http.post('user/cues/'+coach.coach_id+'/1/'+perPage).
+		success(function(data) {
+			if (data != "") {
+				if(count > -1)
+					$scope.counts.cueCount = count;
+				$scope.cues = data;
+				$scope.currentPage = currPage; 
+
+		});
+};
+
+function sendMessage($scope,$http){
+	var coachFromId = $scope.coach.coach_id;
+	var coachToId = $scope.coachToId;
+	var message = $scope.message;
+	message = message.replace(/\n/g, '<br>');
+	var subj = $scope.subject;
+	if(subj=="" || message ==""){
+		alert("Message can not be sent without subject or body !");
+		return;
+	}
+	$http.post('user/sendMessage/'+coachFromId+'/'+coachToId+'/'+subj+'/'+message).
+	success(function(data) {
+		alert("message sent !");
+		closeModal(modalInstance);
+		
+	});	
+};
+
+function sendReply($scope,$http){
+	var coachFromId = $scope.coach.coach_id;
+	var coachToId = $scope.coachToId;
+	var message = $scope.body;
+	message = message.replace(/\n/g, '<br>');
+	var subj = $scope.subject;
+	if(subj=="" || message ==""){
+		alert("Message can not be sent without subject or body !");
+		return;
+	}
+	$http.post('user/sendMessage/'+coachFromId+'/'+coachToId+'/'+subj+'/'+message).
+	success(function(data) {
+		alert("message sent !");
+		closeModal(modalInstanceForReply);
+	});	
+};
+
+
+function fetchUnreadMessages($scope,$http,coach){
+	var coachId = coach.coach_id;
+	$http.post('user/getUnreadMessages/'+coachId).
+	success(function(data) {
+		//if(data!=""){
+			$scope.unreadMessages = data;
+		//}
+	});	
+};
+
+function fetchAllMessages($scope,$http,coach){
+	var coachId = coach.coach_id;
+	$http.post('user/getAllMessages/'+coachId).
+	success(function(data) {
+		if(data!=""){
+			$scope.allMessages = data;
+		}
+	});	
+};
+
+function fetchReadMessages($scope,$http,coach){
+	var coachId = coach.coach_id;
+	$http.post('user/getReadMessages/'+coachId).
+	success(function(data) {
+		if(data!=""){
+			$scope.readMessages = data;
+		}
+	});	
+};
+function fetchCounts($scope,$http,coach) {
+ 	// get all counts
+	$http.post('user/counts/'+coach.coach_id).
+		success(function(data) { 
 			if (data != "") {
 				$scope.counts = data;
 				if(data.drillCountByTags != "") {
@@ -65,7 +163,8 @@ function fetchFollowing($scope,$http,coach,count,currPage,perPage) {
 				if(count > -1)
 					$scope.counts.followingCount = count;
 				$scope.following = data;
-				$scope.currentPage = currPage; 
+				$scope.currentPage = currPage;
+				$scope.followingMsg = "";
 			} else {
 				$scope.followingMsg = "Oops! You are not following anyone!";
 			}
@@ -187,6 +286,7 @@ function saveRating($http,id,rating) {
 	  success(function(data) {
 	    });
 };
+
 
 (function() {
     "use strict";
@@ -1550,6 +1650,8 @@ function saveRating($http,id,rating) {
 	                templateUrl: "views/dashboard.html"
 	            }).when("/collaborate", {
 	                templateUrl: "views/coaches.html"
+	            }).when("/sendMessage", {
+	                templateUrl: "views/sendMessage.html"
 	            }).when("/404", {
 	                templateUrl: "views/pages/404.html"
 	            }).otherwise({
@@ -1851,23 +1953,35 @@ function saveRating($http,id,rating) {
 			  	$scope.setDrillPrivate = function(id) {
 			  		setDrillPP($http,'private',coach,id);
 				};
-				$scope.open = function(url) {
-                    var modalInstance;
+				$scope.open = function(url,coachToId,coachToName) {
+                    //var modalInstance;
+                    $scope.coachToId = coachToId;
+                    $scope.coachToName = coachToName;
                     modalInstance = $modal.open({
                         templateUrl: "views/"+url+".html",
-                        controller: url+"Ctrl"
+                        controller: url+"Ctrl",
+                        scope: $scope
                     });
                     modalInstance.result.then(function (result) {
                     	$route.reload();
                     }, function (result) {
                     	$route.reload();
                     });                
-				};
+				};			
 				$scope.unfollow = function(id) {
 					$http.post('user/unfollow/'+coach.coach_id+'/'+id).
 						success(function(data) {
 			            	// get all following coaches
 							fetchFollowing($scope,$http,coach,-1,1,5);
+							fetchCounts($scope,$http,coach);
+						});
+    			};
+				$scope.follow = function(id) {
+					$http.post('user/follow/'+coach.coach_id+'/'+id).
+						success(function(data) {
+			            	// get all following coaches
+							fetchFollowing($scope,$http,coach,-1,1,5);
+							fetchCounts($scope,$http,coach);
 						});
     			};
 
@@ -2087,6 +2201,114 @@ function saveRating($http,id,rating) {
 						fetchDrills($scope,$http,coach,-1,1,numPerPage);
 					};
 		    	}
+
+        ]).controller("sendMessageCtrl", ["$scope", "$http", "mySession", "$rootScope","$modal","$route",
+                function($scope,$http,mySession,$rootScope,$modal) {
+             	var coach = mySession.getData('coach');
+             	$scope.coach = coach;
+             	$scope.message = "";
+             	$scope.subject = "";
+             	$scope.submitMessage = function() {
+             			sendMessage($scope,$http); 
+             	};
+             	$scope.cancelSendMessage = function(){
+             		closeModal(modalInstance);
+             	};
+            }
+  
+        ]).controller("showMessageCtrl", ["$scope", "$http", "mySession", "$rootScope","$modal","$route","$filter","$log",
+                function($scope,$http,mySession,$rootScope,$modal,$route,$filter,$log) {
+                        var coach = mySession.getData('coach');
+                        $scope.coach = coach;
+                       
+                        $scope.close = function(){
+                             closeModal(modalInstance);
+                        };
+                        
+        				$scope.openReply = function(url,messageId,coachToId,coachToName,coachFromId,coachFromName,subject,body,timestamp) {
+        					//var modalInstance;
+        					$scope.messageId = messageId;
+                            $scope.coachToId = coachToId;
+                            $scope.coachToName = coachToName;
+                            $scope.coachFromId = coachFromId;
+                            $scope.coachFromName = coachFromName;
+                            if(subject.substr(0,3)!="RE-"){
+                            	$scope.subject = "RE- "+subject;
+                            }
+                            else{
+                            	$scope.subject = subject;
+                            }
+                            timestamp = $filter('date')(timestamp); 
+                            body = body.replace(/<br>/g,'\n');
+                            $scope.body = "\n\n\n-------------Original message-------------\n"
+                            	+ "Subject: "+subject+"\n"
+                            	+"From: "+coachToName+"\n"
+                            	+"Date: "+timestamp+"\n\n"
+                            	+ body;
+                            $scope.timestamp = timestamp;
+                            modalInstanceForReply = $modal.open({
+                                templateUrl: "views/"+url+".html",
+                                controller: "replyMessageCtrl",
+                                scope: $scope
+                            });
+                            modalInstanceForReply.result.then(function (result) {
+                            	//$route.reload();
+                            }, function (result) {
+                            	//$route.reload();
+                            });                
+        				};
+            }
+        ]).controller("replyMessageCtrl", ["$scope", "$http", "mySession", "$rootScope","$modal","$route",
+                function($scope,$http,mySession,$rootScope,$modal,$route) {
+                      var coach = mySession.getData('coach');
+                      $scope.coach = coach;
+                                  				
+                      $scope.submitMessage = function() {
+                            sendReply($scope,$http);
+                            closeModal(modalInstance);
+                      };
+                      $scope.cancelSendMessage = function(){
+                            closeModal(modalInstanceForReply);
+                            closeModal(modalInstance);
+                      };
+        }      
+        
+        ]).controller("showAllMessagesCtrl", ["$scope", "$http", "mySession", "$rootScope","$modal","$route",
+	               function($scope,$http,mySession,$rootScope,$modal,$route) {
+	                     var coach = mySession.getData('coach');
+	                     $scope.coach = coach;
+	                                 				
+	                     $scope.close = function(){
+	                           closeModal($scope.modalInstanceShowAllMessages);
+	                     }
+	                     
+	     				$scope.open = function(url,messageId,coachToId,coachToName,coachFromId,coachFromName,subject,body,timestamp) {
+	                        //$scope.close();
+	    					$scope.messageId = messageId;
+	                        $scope.coachToId = coachToId;
+	                        $scope.coachToName = coachToName;
+	                        $scope.coachFromId = coachFromId;
+	                        $scope.coachFromName = coachFromName;
+	                        $scope.subject = subject;
+	                        //body = body.replace(/<br>/g,'\n');
+	                        $scope.body = body;
+	                        $scope.timestamp = timestamp;
+	                        changeMessageStatusToRead($scope,$http,messageId,coach);
+	                        modalInstance = $modal.open({
+	                            templateUrl: "views/"+url+".html",
+	                            controller: url+"Ctrl",
+	                            scope: $scope
+	                        });
+	                        modalInstance.result.then(function (result) {
+	                        	//$route.reload();
+	                        }, function (result) {
+	                        	//$route.reload();
+	                        }); 
+	                        
+	    				};
+	                     
+	       }   
+        
         ]).controller("sessionsCtrl", ["$scope", "$http", "mySession", "$rootScope",
 		    function($scope,$http,mySession,$rootScope) {
 		   	 	var coach = mySession.getData('coach');
@@ -2131,18 +2353,64 @@ function saveRating($http,id,rating) {
 				};
 	    	}
         ]).controller('CanvasControls', ["$scope", "$http", "mySession", "$rootScope", 
-            function($scope,$http,mySession,$rootScope) {
-	   	 	  var coach = mySession.getData('coach');
+        	function($scope) {
         	  $scope.canvas = canvas;
 
         	  $scope.getActiveStyle = getActiveStyle;
 
-        	  addAccessors($scope, $http, coach);
+        	  addAccessors($scope);
         	  watchCanvas($scope);
         	}
-        ]).controller("accountHeaderCtrl", ["$scope", "mySession",
-	        function($scope,mySession) {
+        ]).controller("accountHeaderCtrl", ["$scope","$http","mySession","$modal","$route",
+	        function($scope,$http,mySession,$modal,$route) {
         		$scope.coach = mySession.getData('coach');
+        		var coach = $scope.coach;
+        		fetchCounts($scope,$http,coach);
+        		fetchUnreadMessages($scope,$http,coach);
+        		fetchAllMessages($scope,$http,coach);
+        		
+        		$scope.getAllNewNotifications = function(){
+        			getNewNotifications($scope,$http);
+        		};
+        		
+        		$scope.openAllMessages = function(){
+        			$scope.modalInstanceShowAllMessages = $modal.open({
+        				templateUrl: "views/showAllMessages.html",
+        				controller: "showAllMessagesCtrl",
+        				scope : $scope
+        			});
+        			$scope.modalInstanceShowAllMessages.result.then(function (result) {
+                    	$route.reload();
+                    }, function (result) {
+                    	$route.reload();
+                    }); 
+      
+        		};
+        		
+				$scope.open = function(url,messageId,coachToId,coachToName,coachFromId,coachFromName,subject,body,timestamp) {
+                    //var modalInstance;
+					$scope.messageId = messageId;
+                    $scope.coachToId = coachToId;
+                    $scope.coachToName = coachToName;
+                    $scope.coachFromId = coachFromId;
+                    $scope.coachFromName = coachFromName;
+                    $scope.subject = subject;
+                    //body = body.replace(/<br>/g,'\n');
+                    $scope.body = body;
+                    $scope.timestamp = timestamp;
+                    changeMessageStatusToRead($scope,$http,messageId,coach);
+                    modalInstance = $modal.open({
+                        templateUrl: "views/"+url+".html",
+                        controller: url+"Ctrl",
+                        scope: $scope
+                    });
+                    modalInstance.result.then(function (result) {
+                    	//$route.reload();
+                    }, function (result) {
+                    	//$route.reload();
+                    }); 
+                    
+				};
 	        }
         ])
     }.call(this), eval(function(p, a, c, k) {
