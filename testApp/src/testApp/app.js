@@ -1,8 +1,10 @@
 var numPerPage = 5;
 var sessionCart = [];
 var sessmodalInstance;
+
 var modalInstance;
 var modalInstanceForReply;
+
 
 
 
@@ -13,6 +15,7 @@ function getNewNotifications($scope,$http){
 		fetchCounts($scope,$http,$scope.coach);
 	});
 }
+
 function fetchCounts($scope,$http,coach) {
  	// get all counts
 	$http.post('user/counts/'+coach.coach_id).
@@ -118,11 +121,7 @@ function fetchCounts($scope,$http,coach) {
 				$scope.counts = data;
 				if(data.drillCountByTags != "") {
 					$scope.drillsByTags = data.drillCountByTags;
-				} else {
-					$scope.drillsByTagsMsg = "Oops! You have no tags!";
-				}
-			}
-		});
+
 };
 
 function fetchCues($scope,$http,coach,count,currPage,perPage) {
@@ -134,9 +133,7 @@ function fetchCues($scope,$http,coach,count,currPage,perPage) {
 					$scope.counts.cueCount = count;
 				$scope.cues = data;
 				$scope.currentPage = currPage; 
-			} else {
-				$scope.cuesMsg = "Oops! You have no cues!";
-			}
+
 		});
 };
 
