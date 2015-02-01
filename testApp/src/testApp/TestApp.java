@@ -9,7 +9,12 @@ public class TestApp {
 		
 		System.out.println("bienvenue");
 		
+
 		Car car = new Car();
+
+		Driver driver = new Driver();
+
+
 	}
 	
 }
