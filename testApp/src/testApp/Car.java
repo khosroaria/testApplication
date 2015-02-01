@@ -35,6 +35,7 @@ public class Car {
 		this.model = model;
 	}
 	@Override
+
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
@@ -72,6 +73,8 @@ public class Car {
 	
 	
 	@Override
+
+
 	public String toString() {
 		return "Car [speed=" + speed + ", make=" + make + ", model=" + model
 				+ "]";
