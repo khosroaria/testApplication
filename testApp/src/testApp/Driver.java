@@ -1,6 +1,6 @@
 package testApp;
 
-public class driver {
+public class Driver {
 	private String name;
 	private String age;
 }
