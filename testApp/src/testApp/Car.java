@@ -71,6 +71,11 @@ public class Car {
 	}
 	
 	
+	@Override
+	public String toString() {
+		return "Car [speed=" + speed + ", make=" + make + ", model=" + model
+				+ "]";
+	}
 	
 	
 	
