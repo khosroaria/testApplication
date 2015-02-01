@@ -8,6 +8,8 @@ public class TestApp {
 		System.out.println("another testingggg");
 		
 		System.out.println("bienvenue");
+		
+		Driver driver = new Driver();
 
 	}
 	
