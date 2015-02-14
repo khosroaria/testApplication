@@ -12,7 +12,11 @@ public class TestApp {
 
 		Car car = new Car();
 
-		Driver driver = new Driver();
+		Driver driver1 = new Driver();
+		Driver driver2 = new Driver();
+		Driver driver3 = new Driver();
+		Driver driver4 = new Driver();
+		Driver driver5 = new Driver();
 
 
 	}
