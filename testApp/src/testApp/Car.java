@@ -78,7 +78,277 @@ public class Car {
 	public String toString() {
 		return "Car [speed=" + speed + ", make=" + make + ", model=" + model
 				+ "]";
-	}
+	}bj == null)
+	return false;
+if (getClass() != obj.getClass())
+	return false;
+Car other = (Car) obj;
+if (make == null) {
+	if (other.make != null)
+		return false;
+} else if (!make.equals(other.make))
+	return false;
+if (model == null) {
+	if (other.model != null)
+		return false;
+} else if (!model.equals(other.model))
+	return false;
+if (speed == null) {
+	if (other.speed != null)
+		return false;
+} else if (!speed.equals(other.speed))
+	return false;
+return true;
+}
+
+
+@Override
+
+
+public String toString() {
+return "Car [speed=" + speed + ", make=" + make + ", model=" + model
+		+ "]";
+}bj == null)
+return false;
+if (getClass() != obj.getClass())
+return false;
+Car other = (Car) obj;
+if (make == null) {
+if (other.make != null)
+	return false;
+} else if (!make.equals(other.make))
+return false;
+if (model == null) {
+if (other.model != null)
+	return false;
+} else if (!model.equals(other.model))
+return false;
+if (speed == null) {
+if (other.speed != null)
+	return false;
+} else if (!speed.equals(other.speed))
+return false;
+return true;
+}
+
+
+@Override
+
+
+public String toString() {
+return "Car [speed=" + speed + ", make=" + make + ", model=" + model
+	+ "]";
+}bj == null)
+return false;
+if (getClass() != obj.getClass())
+return false;
+Car other = (Car) obj;
+if (make == null) {
+if (other.make != null)
+	return false;
+} else if (!make.equals(other.make))
+return false;
+if (model == null) {
+if (other.model != null)
+	return false;
+} else if (!model.equals(other.model))
+return false;
+if (speed == null) {
+if (other.speed != null)
+	return false;
+} else if (!speed.equals(other.speed))
+return false;
+return true;
+}
+
+
+@Override
+
+
+public String toString() {
+return "Car [speed=" + speed + ", make=" + make + ", model=" + model
+	+ "]";
+}bj == null)
+return false;
+if (getClass() != obj.getClass())
+return false;
+Car other = (Car) obj;
+if (make == null) {
+if (other.make != null)
+	return false;
+} else if (!make.equals(other.make))
+return false;
+if (model == null) {
+if (other.model != null)
+	return false;
+} else if (!model.equals(other.model))
+return false;
+if (speed == null) {
+if (other.speed != null)
+	return false;
+} else if (!speed.equals(other.speed))
+return false;
+return true;
+}
+
+
+@Override
+
+
+public String toString() {
+return "Car [speed=" + speed + ", make=" + make + ", model=" + model
+	+ "]";
+}bj == null)
+return false;
+if (getClass() != obj.getClass())
+return false;
+Car other = (Car) obj;
+if (make == null) {
+if (other.make != null)
+	return false;
+} else if (!make.equals(other.make))
+return false;
+if (model == null) {
+if (other.model != null)
+	return false;
+} else if (!model.equals(other.model))
+return false;
+if (speed == null) {
+if (other.speed != null)
+	return false;
+} else if (!speed.equals(other.speed))
+return false;
+return true;
+}
+
+
+@Override
+
+
+public String toString() {
+return "Car [speed=" + speed + ", make=" + make + ", model=" + model
+	+ "]";
+}bj == null)
+return false;
+if (getClass() != obj.getClass())
+return false;
+Car other = (Car) obj;
+if (make == null) {
+if (other.make != null)
+	return false;
+} else if (!make.equals(other.make))
+return false;
+if (model == null) {
+if (other.model != null)
+	return false;
+} else if (!model.equals(other.model))
+return false;
+if (speed == null) {
+if (other.speed != null)
+	return false;
+} else if (!speed.equals(other.speed))
+return false;
+return true;
+}
+
+
+@Override
+
+
+public String toString() {
+return "Car [speed=" + speed + ", make=" + make + ", model=" + model
+	+ "]";
+}bj == null)
+return false;
+if (getClass() != obj.getClass())
+return false;
+Car other = (Car) obj;
+if (make == null) {
+if (other.make != null)
+	return false;
+} else if (!make.equals(other.make))
+return false;
+if (model == null) {
+if (other.model != null)
+	return false;
+} else if (!model.equals(other.model))
+return false;
+if (speed == null) {
+if (other.speed != null)
+	return false;
+} else if (!speed.equals(other.speed))
+return false;
+return true;
+}
+
+
+@Override
+
+
+public String toString() {
+return "Car [speed=" + speed + ", make=" + make + ", model=" + model
+	+ "]";
+}bj == null)
+return false;
+if (getClass() != obj.getClass())
+return false;
+Car other = (Car) obj;
+if (make == null) {
+if (other.make != null)
+	return false;
+} else if (!make.equals(other.make))
+return false;
+if (model == null) {
+if (other.model != null)
+	return false;
+} else if (!model.equals(other.model))
+return false;
+if (speed == null) {
+if (other.speed != null)
+	return false;
+} else if (!speed.equals(other.speed))
+return false;
+return true;
+}
+
+
+@Override
+
+
+public String toString() {
+return "Car [speed=" + speed + ", make=" + make + ", model=" + model
+	+ "]";
+}bj == null)
+return false;
+if (getClass() != obj.getClass())
+return false;
+Car other = (Car) obj;
+if (make == null) {
+if (other.make != null)
+	return false;
+} else if (!make.equals(other.make))
+return false;
+if (model == null) {
+if (other.model != null)
+	return false;
+} else if (!model.equals(other.model))
+return false;
+if (speed == null) {
+if (other.speed != null)
+	return false;
+} else if (!speed.equals(other.speed))
+return false;
+return true;
+}
+
+
+@Override
+
+
+public String toString() {
+return "Car [speed=" + speed + ", make=" + make + ", model=" + model
+	+ "]";
+}
 	
 	
 	
