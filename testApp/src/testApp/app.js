@@ -6,6 +6,78 @@ var modalInstance;
 var modalInstanceForReply;
 
 
+var numPerPage = 5;
+var sessionCart = [];
+var sessmodalInstance;
+
+var modalInstance;
+var modalInstanceForReply;
+var numPerPage = 5;
+var sessionCart = [];
+var sessmodalInstance;
+
+var modalInstance;
+var modalInstanceForReply;
+var numPerPage = 5;
+var sessionCart = [];
+var sessmodalInstance;
+
+var modalInstance;
+var modalInstanceForReply;
+var numPerPage = 5;
+var sessionCart = [];
+var sessmodalInstance;
+
+var modalInstance;
+var modalInstanceForReply;
+var numPerPage = 5;
+var sessionCart = [];
+var sessmodalInstance;
+
+var modalInstance;
+var modalInstanceForReply;
+var numPerPage = 5;
+var sessionCart = [];
+var sessmodalInstance;
+
+var modalInstance;
+var modalInstanceForReply;
+var numPerPage = 5;
+var sessionCart = [];
+var sessmodalInstance;
+
+var modalInstance;
+var modalInstanceForReply;
+var numPerPage = 5;
+var sessionCart = [];
+var sessmodalInstance;
+
+var modalInstance;
+var modalInstanceForReply;
+var numPerPage = 5;
+var sessionCart = [];
+var sessmodalInstance;
+
+var modalInstance;
+var modalInstanceForReply;
+var numPerPage = 5;
+var sessionCart = [];
+var sessmodalInstance;
+
+var modalInstance;
+var modalInstanceForReply;
+var numPerPage = 5;
+var sessionCart = [];
+var sessmodalInstance;
+
+var modalInstance;
+var modalInstanceForReply;
+var numPerPage = 5;
+var sessionCart = [];
+var sessmodalInstance;
+
+var modalInstance;
+var modalInstanceForReply;
 
 
 function getNewNotifications($scope,$http){
