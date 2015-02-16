@@ -2276,6 +2276,1638 @@ function saveRating($http,id,rating) {
              	var coach = mySession.getData('coach');
              	$scope.coach = coach;
              	$scope.message = "";
+             	$scope.subject = "";					fetchCoaches($scope,$http,coach,1);
+    			};
+    			$scope.selectAll = function(filter) {
+    				if(filter == "year") {
+						if($("#year_all").prop("checked") == true) {
+	    					$scope.yearFilter = ['0-5','6-10','11-15','16-20','20+'];    				
+	    					for(var i = 1; i <=5; i++){
+    							$("#year_"+i).prop("checked", true);
+    						} 
+	    				} else {
+	    					for(var i = 1; i <=5; i++){
+    							$("#year_"+i).prop("checked", false);
+	    					}
+	    					$scope.yearFilter = [];    				
+    					}
+    				}
+		   	 		// get all coaches
+					fetchCoaches($scope,$http,coach,1);
+    			};
+    			
+	        }
+        ]).controller("drillsCtrl", ["$scope", "$http", "mySession", "$rootScope","$modal","$route",
+			    function($scope,$http,mySession,$rootScope,$modal) {
+			   	 	var coach = mySession.getData('coach');
+                    
+			   	 	$scope.sessionCartSize = sessionCart.length;
+			   	 	
+					// get all counts
+//		   	 		fetchCounts($scope,$http,coach);
+
+		   	 		// get all drills
+					fetchDrills($scope,$http,coach,-1,1,numPerPage);
+					$scope.select = function(page) {
+						closeModal(sessmodalInstance);
+						sessmodalInstance = undefined;
+						fetchDrills($scope,$http,coach,-1,page,numPerPage);
+	    			};
+	    			$scope.pushToCart = function(id, name) {
+						closeModal(sessmodalInstance);
+						sessmodalInstance = undefined;
+	    				var i = sessionCart.indexOf(id);
+	    				if(i != -1) 
+	    					sessionCart.splice(i, 1);
+	    				else
+	    					sessionCart.push(id);
+	    				$scope.$emit("drillAdded", sessionCart);	
+	    				$scope.sessionCartSize = sessionCart.length;
+	    			};
+	    			
+	    			$scope.inSession = function(id) {
+	    				return (sessionCart.indexOf(id) != -1);
+	    			}
+	    			
+					$scope.openSessionCart = function() {
+	                    sessmodalInstance = $modal.open({
+	                        templateUrl: "views/sessioncart.html",
+	                        controller: "sessionCartCtrl",
+	                        windowClass: "class-with-width"
+	                    });
+	                    sessmodalInstance.result.then(function (result) {
+	        				$scope.sessionCartSize = sessionCart.length;
+	                    	if(result === "session-created") {
+	        		   	 		// get all drills
+	        					fetchDrills($scope,$http,coach,-1,1,numPerPage);
+	        					sessionCart = [];
+	        					$scope.sessionCartSize = sessionCart.length;
+	    						sessmodalInstance = undefined;
+	                    	}
+	                    }, function (result) {
+	        				$scope.sessionCartSize = sessionCart.length;
+							sessmodalInstance = undefined;
+	                    });                
+					};
+
+					$scope.deleteDrill = function(id, name) {
+						closeModal(sessmodalInstance);
+						sessmodalInstance = undefined;
+						
+						bootbox.dialog({
+							  message: "Are you sure you want to delete the drill: " + name,
+							  title: "Delete drill",
+							  className : "class-with-width",
+							  buttons: {
+							    success: {label: "Yes!",className: "btn-success",
+							      callback: function() {
+									$http.post('user/deleteDrill/' +id+'/'+coach.coach_id).
+									success(function(data) {
+										fetchDrills($scope,$http,coach,($scope.drillsInPage-1),$scope.currentPage,numPerPage);
+									});
+							      }
+							    },
+							    danger: {label: "No!",className: "btn-danger",callback: function() {}}
+							  }
+							});						
+					};
+					$scope.setDrillPublic = function(id) {
+						closeModal(sessmodalInstance);
+						sessmodalInstance = undefined;
+						setDrillPP($http,'public',coach,id);
+					};
+				  	$scope.setDrillPrivate = function(id) {
+						closeModal(sessmodalInstance);
+						sessmodalInstance = undefined;
+				  		setDrillPP($http,'private',coach,id);
+					};
+				  	$scope.saveRating = function(id,rating) {
+						closeModal(sessmodalInstance);
+						sessmodalInstance = undefined;
+				  		saveRating($http,id,rating);
+					};
+					$scope.search = function() {
+						closeModal(sessmodalInstance);
+						sessmodalInstance = undefined;
+						fetchDrills($scope,$http,coach,-1,1,numPerPage);
+					};
+					$scope.sort = function(arrowId,sortField) {
+						closeModal(sessmodalInstance);
+						sessmodalInstance = undefined;
+						$scope.sortField = sortField;
+						$('span[id$="Up"]').each(function () {
+							$('#'+this.id).css('color','#777');
+						});
+						$('span[id$="Down"]').each(function () {
+							$('#'+this.id).css('color','#777');
+						});
+						
+						$('#'+arrowId).css('color','#1c7ebb');
+						fetchDrills($scope,$http,coach,-1,1,numPerPage);
+					};
+		    	}
+
+        ]).controller("sendMessageCtrl", ["$scope", "$http", "mySession", "$rootScope","$modal","$route",
+                function($scope,$http,mySession,$rootScope,$modal) {
+             	var coach = mySession.getData('coach');
+             	$scope.coach = coach;
+             	$scope.message = "";
+             	$scope.subject = "";					fetchCoaches($scope,$http,coach,1);
+    			};
+    			$scope.selectAll = function(filter) {
+    				if(filter == "year") {
+						if($("#year_all").prop("checked") == true) {
+	    					$scope.yearFilter = ['0-5','6-10','11-15','16-20','20+'];    				
+	    					for(var i = 1; i <=5; i++){
+    							$("#year_"+i).prop("checked", true);
+    						} 
+	    				} else {
+	    					for(var i = 1; i <=5; i++){
+    							$("#year_"+i).prop("checked", false);
+	    					}
+	    					$scope.yearFilter = [];    				
+    					}
+    				}
+		   	 		// get all coaches
+					fetchCoaches($scope,$http,coach,1);
+    			};
+    			
+	        }
+        ]).controller("drillsCtrl", ["$scope", "$http", "mySession", "$rootScope","$modal","$route",
+			    function($scope,$http,mySession,$rootScope,$modal) {
+			   	 	var coach = mySession.getData('coach');
+                    
+			   	 	$scope.sessionCartSize = sessionCart.length;
+			   	 	
+					// get all counts
+//		   	 		fetchCounts($scope,$http,coach);
+
+		   	 		// get all drills
+					fetchDrills($scope,$http,coach,-1,1,numPerPage);
+					$scope.select = function(page) {
+						closeModal(sessmodalInstance);
+						sessmodalInstance = undefined;
+						fetchDrills($scope,$http,coach,-1,page,numPerPage);
+	    			};
+	    			$scope.pushToCart = function(id, name) {
+						closeModal(sessmodalInstance);
+						sessmodalInstance = undefined;
+	    				var i = sessionCart.indexOf(id);
+	    				if(i != -1) 
+	    					sessionCart.splice(i, 1);
+	    				else
+	    					sessionCart.push(id);
+	    				$scope.$emit("drillAdded", sessionCart);	
+	    				$scope.sessionCartSize = sessionCart.length;
+	    			};
+	    			
+	    			$scope.inSession = function(id) {
+	    				return (sessionCart.indexOf(id) != -1);
+	    			}
+	    			
+					$scope.openSessionCart = function() {
+	                    sessmodalInstance = $modal.open({
+	                        templateUrl: "views/sessioncart.html",
+	                        controller: "sessionCartCtrl",
+	                        windowClass: "class-with-width"
+	                    });
+	                    sessmodalInstance.result.then(function (result) {
+	        				$scope.sessionCartSize = sessionCart.length;
+	                    	if(result === "session-created") {
+	        		   	 		// get all drills
+	        					fetchDrills($scope,$http,coach,-1,1,numPerPage);
+	        					sessionCart = [];
+	        					$scope.sessionCartSize = sessionCart.length;
+	    						sessmodalInstance = undefined;
+	                    	}
+	                    }, function (result) {
+	        				$scope.sessionCartSize = sessionCart.length;
+							sessmodalInstance = undefined;
+	                    });                
+					};
+
+					$scope.deleteDrill = function(id, name) {
+						closeModal(sessmodalInstance);
+						sessmodalInstance = undefined;
+						
+						bootbox.dialog({
+							  message: "Are you sure you want to delete the drill: " + name,
+							  title: "Delete drill",
+							  className : "class-with-width",
+							  buttons: {
+							    success: {label: "Yes!",className: "btn-success",
+							      callback: function() {
+									$http.post('user/deleteDrill/' +id+'/'+coach.coach_id).
+									success(function(data) {
+										fetchDrills($scope,$http,coach,($scope.drillsInPage-1),$scope.currentPage,numPerPage);
+									});
+							      }
+							    },
+							    danger: {label: "No!",className: "btn-danger",callback: function() {}}
+							  }
+							});						
+					};
+					$scope.setDrillPublic = function(id) {
+						closeModal(sessmodalInstance);
+						sessmodalInstance = undefined;
+						setDrillPP($http,'public',coach,id);
+					};
+				  	$scope.setDrillPrivate = function(id) {
+						closeModal(sessmodalInstance);
+						sessmodalInstance = undefined;
+				  		setDrillPP($http,'private',coach,id);
+					};
+				  	$scope.saveRating = function(id,rating) {
+						closeModal(sessmodalInstance);
+						sessmodalInstance = undefined;
+				  		saveRating($http,id,rating);
+					};
+					$scope.search = function() {
+						closeModal(sessmodalInstance);
+						sessmodalInstance = undefined;
+						fetchDrills($scope,$http,coach,-1,1,numPerPage);
+					};
+					$scope.sort = function(arrowId,sortField) {
+						closeModal(sessmodalInstance);
+						sessmodalInstance = undefined;
+						$scope.sortField = sortField;
+						$('span[id$="Up"]').each(function () {
+							$('#'+this.id).css('color','#777');
+						});
+						$('span[id$="Down"]').each(function () {
+							$('#'+this.id).css('color','#777');
+						});
+						
+						$('#'+arrowId).css('color','#1c7ebb');
+						fetchDrills($scope,$http,coach,-1,1,numPerPage);
+					};
+		    	}
+
+        ]).controller("sendMessageCtrl", ["$scope", "$http", "mySession", "$rootScope","$modal","$route",
+                function($scope,$http,mySession,$rootScope,$modal) {
+             	var coach = mySession.getData('coach');
+             	$scope.coach = coach;
+             	$scope.message = "";
+             	$scope.subject = "";					fetchCoaches($scope,$http,coach,1);
+    			};
+    			$scope.selectAll = function(filter) {
+    				if(filter == "year") {
+						if($("#year_all").prop("checked") == true) {
+	    					$scope.yearFilter = ['0-5','6-10','11-15','16-20','20+'];    				
+	    					for(var i = 1; i <=5; i++){
+    							$("#year_"+i).prop("checked", true);
+    						} 
+	    				} else {
+	    					for(var i = 1; i <=5; i++){
+    							$("#year_"+i).prop("checked", false);
+	    					}
+	    					$scope.yearFilter = [];    				
+    					}
+    				}
+		   	 		// get all coaches
+					fetchCoaches($scope,$http,coach,1);
+    			};
+    			
+	        }
+        ]).controller("drillsCtrl", ["$scope", "$http", "mySession", "$rootScope","$modal","$route",
+			    function($scope,$http,mySession,$rootScope,$modal) {
+			   	 	var coach = mySession.getData('coach');
+                    
+			   	 	$scope.sessionCartSize = sessionCart.length;
+			   	 	
+					// get all counts
+//		   	 		fetchCounts($scope,$http,coach);
+
+		   	 		// get all drills
+					fetchDrills($scope,$http,coach,-1,1,numPerPage);
+					$scope.select = function(page) {
+						closeModal(sessmodalInstance);
+						sessmodalInstance = undefined;
+						fetchDrills($scope,$http,coach,-1,page,numPerPage);
+	    			};
+	    			$scope.pushToCart = function(id, name) {
+						closeModal(sessmodalInstance);
+						sessmodalInstance = undefined;
+	    				var i = sessionCart.indexOf(id);
+	    				if(i != -1) 
+	    					sessionCart.splice(i, 1);
+	    				else
+	    					sessionCart.push(id);
+	    				$scope.$emit("drillAdded", sessionCart);	
+	    				$scope.sessionCartSize = sessionCart.length;
+	    			};
+	    			
+	    			$scope.inSession = function(id) {
+	    				return (sessionCart.indexOf(id) != -1);
+	    			}
+	    			
+					$scope.openSessionCart = function() {
+	                    sessmodalInstance = $modal.open({
+	                        templateUrl: "views/sessioncart.html",
+	                        controller: "sessionCartCtrl",
+	                        windowClass: "class-with-width"
+	                    });
+	                    sessmodalInstance.result.then(function (result) {
+	        				$scope.sessionCartSize = sessionCart.length;
+	                    	if(result === "session-created") {
+	        		   	 		// get all drills
+	        					fetchDrills($scope,$http,coach,-1,1,numPerPage);
+	        					sessionCart = [];
+	        					$scope.sessionCartSize = sessionCart.length;
+	    						sessmodalInstance = undefined;
+	                    	}
+	                    }, function (result) {
+	        				$scope.sessionCartSize = sessionCart.length;
+							sessmodalInstance = undefined;
+	                    });                
+					};
+
+					$scope.deleteDrill = function(id, name) {
+						closeModal(sessmodalInstance);
+						sessmodalInstance = undefined;
+						
+						bootbox.dialog({
+							  message: "Are you sure you want to delete the drill: " + name,
+							  title: "Delete drill",
+							  className : "class-with-width",
+							  buttons: {
+							    success: {label: "Yes!",className: "btn-success",
+							      callback: function() {
+									$http.post('user/deleteDrill/' +id+'/'+coach.coach_id).
+									success(function(data) {
+										fetchDrills($scope,$http,coach,($scope.drillsInPage-1),$scope.currentPage,numPerPage);
+									});
+							      }
+							    },
+							    danger: {label: "No!",className: "btn-danger",callback: function() {}}
+							  }
+							});						
+					};
+					$scope.setDrillPublic = function(id) {
+						closeModal(sessmodalInstance);
+						sessmodalInstance = undefined;
+						setDrillPP($http,'public',coach,id);
+					};
+				  	$scope.setDrillPrivate = function(id) {
+						closeModal(sessmodalInstance);
+						sessmodalInstance = undefined;
+				  		setDrillPP($http,'private',coach,id);
+					};
+				  	$scope.saveRating = function(id,rating) {
+						closeModal(sessmodalInstance);
+						sessmodalInstance = undefined;
+				  		saveRating($http,id,rating);
+					};
+					$scope.search = function() {
+						closeModal(sessmodalInstance);
+						sessmodalInstance = undefined;
+						fetchDrills($scope,$http,coach,-1,1,numPerPage);
+					};
+					$scope.sort = function(arrowId,sortField) {
+						closeModal(sessmodalInstance);
+						sessmodalInstance = undefined;
+						$scope.sortField = sortField;
+						$('span[id$="Up"]').each(function () {
+							$('#'+this.id).css('color','#777');
+						});
+						$('span[id$="Down"]').each(function () {
+							$('#'+this.id).css('color','#777');
+						});
+						
+						$('#'+arrowId).css('color','#1c7ebb');
+						fetchDrills($scope,$http,coach,-1,1,numPerPage);
+					};
+		    	}
+
+        ]).controller("sendMessageCtrl", ["$scope", "$http", "mySession", "$rootScope","$modal","$route",
+                function($scope,$http,mySession,$rootScope,$modal) {
+             	var coach = mySession.getData('coach');
+             	$scope.coach = coach;
+             	$scope.message = "";
+             	$scope.subject = "";					fetchCoaches($scope,$http,coach,1);
+    			};
+    			$scope.selectAll = function(filter) {
+    				if(filter == "year") {
+						if($("#year_all").prop("checked") == true) {
+	    					$scope.yearFilter = ['0-5','6-10','11-15','16-20','20+'];    				
+	    					for(var i = 1; i <=5; i++){
+    							$("#year_"+i).prop("checked", true);
+    						} 
+	    				} else {
+	    					for(var i = 1; i <=5; i++){
+    							$("#year_"+i).prop("checked", false);
+	    					}
+	    					$scope.yearFilter = [];    				
+    					}
+    				}
+		   	 		// get all coaches
+					fetchCoaches($scope,$http,coach,1);
+    			};
+    			
+	        }
+        ]).controller("drillsCtrl", ["$scope", "$http", "mySession", "$rootScope","$modal","$route",
+			    function($scope,$http,mySession,$rootScope,$modal) {
+			   	 	var coach = mySession.getData('coach');
+                    
+			   	 	$scope.sessionCartSize = sessionCart.length;
+			   	 	
+					// get all counts
+//		   	 		fetchCounts($scope,$http,coach);
+
+		   	 		// get all drills
+					fetchDrills($scope,$http,coach,-1,1,numPerPage);
+					$scope.select = function(page) {
+						closeModal(sessmodalInstance);
+						sessmodalInstance = undefined;
+						fetchDrills($scope,$http,coach,-1,page,numPerPage);
+	    			};
+	    			$scope.pushToCart = function(id, name) {
+						closeModal(sessmodalInstance);
+						sessmodalInstance = undefined;
+	    				var i = sessionCart.indexOf(id);
+	    				if(i != -1) 
+	    					sessionCart.splice(i, 1);
+	    				else
+	    					sessionCart.push(id);
+	    				$scope.$emit("drillAdded", sessionCart);	
+	    				$scope.sessionCartSize = sessionCart.length;
+	    			};
+	    			
+	    			$scope.inSession = function(id) {
+	    				return (sessionCart.indexOf(id) != -1);
+	    			}
+	    			
+					$scope.openSessionCart = function() {
+	                    sessmodalInstance = $modal.open({
+	                        templateUrl: "views/sessioncart.html",
+	                        controller: "sessionCartCtrl",
+	                        windowClass: "class-with-width"
+	                    });
+	                    sessmodalInstance.result.then(function (result) {
+	        				$scope.sessionCartSize = sessionCart.length;
+	                    	if(result === "session-created") {
+	        		   	 		// get all drills
+	        					fetchDrills($scope,$http,coach,-1,1,numPerPage);
+	        					sessionCart = [];
+	        					$scope.sessionCartSize = sessionCart.length;
+	    						sessmodalInstance = undefined;
+	                    	}
+	                    }, function (result) {
+	        				$scope.sessionCartSize = sessionCart.length;
+							sessmodalInstance = undefined;
+	                    });                
+					};
+
+					$scope.deleteDrill = function(id, name) {
+						closeModal(sessmodalInstance);
+						sessmodalInstance = undefined;
+						
+						bootbox.dialog({
+							  message: "Are you sure you want to delete the drill: " + name,
+							  title: "Delete drill",
+							  className : "class-with-width",
+							  buttons: {
+							    success: {label: "Yes!",className: "btn-success",
+							      callback: function() {
+									$http.post('user/deleteDrill/' +id+'/'+coach.coach_id).
+									success(function(data) {
+										fetchDrills($scope,$http,coach,($scope.drillsInPage-1),$scope.currentPage,numPerPage);
+									});
+							      }
+							    },
+							    danger: {label: "No!",className: "btn-danger",callback: function() {}}
+							  }
+							});						
+					};
+					$scope.setDrillPublic = function(id) {
+						closeModal(sessmodalInstance);
+						sessmodalInstance = undefined;
+						setDrillPP($http,'public',coach,id);
+					};
+				  	$scope.setDrillPrivate = function(id) {
+						closeModal(sessmodalInstance);
+						sessmodalInstance = undefined;
+				  		setDrillPP($http,'private',coach,id);
+					};
+				  	$scope.saveRating = function(id,rating) {
+						closeModal(sessmodalInstance);
+						sessmodalInstance = undefined;
+				  		saveRating($http,id,rating);
+					};
+					$scope.search = function() {
+						closeModal(sessmodalInstance);
+						sessmodalInstance = undefined;
+						fetchDrills($scope,$http,coach,-1,1,numPerPage);
+					};
+					$scope.sort = function(arrowId,sortField) {
+						closeModal(sessmodalInstance);
+						sessmodalInstance = undefined;
+						$scope.sortField = sortField;
+						$('span[id$="Up"]').each(function () {
+							$('#'+this.id).css('color','#777');
+						});
+						$('span[id$="Down"]').each(function () {
+							$('#'+this.id).css('color','#777');
+						});
+						
+						$('#'+arrowId).css('color','#1c7ebb');
+						fetchDrills($scope,$http,coach,-1,1,numPerPage);
+					};
+		    	}
+
+        ]).controller("sendMessageCtrl", ["$scope", "$http", "mySession", "$rootScope","$modal","$route",
+                function($scope,$http,mySession,$rootScope,$modal) {
+             	var coach = mySession.getData('coach');
+             	$scope.coach = coach;
+             	$scope.message = "";
+             	$scope.subject = "";					fetchCoaches($scope,$http,coach,1);
+    			};
+    			$scope.selectAll = function(filter) {
+    				if(filter == "year") {
+						if($("#year_all").prop("checked") == true) {
+	    					$scope.yearFilter = ['0-5','6-10','11-15','16-20','20+'];    				
+	    					for(var i = 1; i <=5; i++){
+    							$("#year_"+i).prop("checked", true);
+    						} 
+	    				} else {
+	    					for(var i = 1; i <=5; i++){
+    							$("#year_"+i).prop("checked", false);
+	    					}
+	    					$scope.yearFilter = [];    				
+    					}
+    				}
+		   	 		// get all coaches
+					fetchCoaches($scope,$http,coach,1);
+    			};
+    			
+	        }
+        ]).controller("drillsCtrl", ["$scope", "$http", "mySession", "$rootScope","$modal","$route",
+			    function($scope,$http,mySession,$rootScope,$modal) {
+			   	 	var coach = mySession.getData('coach');
+                    
+			   	 	$scope.sessionCartSize = sessionCart.length;
+			   	 	
+					// get all counts
+//		   	 		fetchCounts($scope,$http,coach);
+
+		   	 		// get all drills
+					fetchDrills($scope,$http,coach,-1,1,numPerPage);
+					$scope.select = function(page) {
+						closeModal(sessmodalInstance);
+						sessmodalInstance = undefined;
+						fetchDrills($scope,$http,coach,-1,page,numPerPage);
+	    			};
+	    			$scope.pushToCart = function(id, name) {
+						closeModal(sessmodalInstance);
+						sessmodalInstance = undefined;
+	    				var i = sessionCart.indexOf(id);
+	    				if(i != -1) 
+	    					sessionCart.splice(i, 1);
+	    				else
+	    					sessionCart.push(id);
+	    				$scope.$emit("drillAdded", sessionCart);	
+	    				$scope.sessionCartSize = sessionCart.length;
+	    			};
+	    			
+	    			$scope.inSession = function(id) {
+	    				return (sessionCart.indexOf(id) != -1);
+	    			}
+	    			
+					$scope.openSessionCart = function() {
+	                    sessmodalInstance = $modal.open({
+	                        templateUrl: "views/sessioncart.html",
+	                        controller: "sessionCartCtrl",
+	                        windowClass: "class-with-width"
+	                    });
+	                    sessmodalInstance.result.then(function (result) {
+	        				$scope.sessionCartSize = sessionCart.length;
+	                    	if(result === "session-created") {
+	        		   	 		// get all drills
+	        					fetchDrills($scope,$http,coach,-1,1,numPerPage);
+	        					sessionCart = [];
+	        					$scope.sessionCartSize = sessionCart.length;
+	    						sessmodalInstance = undefined;
+	                    	}
+	                    }, function (result) {
+	        				$scope.sessionCartSize = sessionCart.length;
+							sessmodalInstance = undefined;
+	                    });                
+					};
+
+					$scope.deleteDrill = function(id, name) {
+						closeModal(sessmodalInstance);
+						sessmodalInstance = undefined;
+						
+						bootbox.dialog({
+							  message: "Are you sure you want to delete the drill: " + name,
+							  title: "Delete drill",
+							  className : "class-with-width",
+							  buttons: {
+							    success: {label: "Yes!",className: "btn-success",
+							      callback: function() {
+									$http.post('user/deleteDrill/' +id+'/'+coach.coach_id).
+									success(function(data) {
+										fetchDrills($scope,$http,coach,($scope.drillsInPage-1),$scope.currentPage,numPerPage);
+									});
+							      }
+							    },
+							    danger: {label: "No!",className: "btn-danger",callback: function() {}}
+							  }
+							});						
+					};
+					$scope.setDrillPublic = function(id) {
+						closeModal(sessmodalInstance);
+						sessmodalInstance = undefined;
+						setDrillPP($http,'public',coach,id);
+					};
+				  	$scope.setDrillPrivate = function(id) {
+						closeModal(sessmodalInstance);
+						sessmodalInstance = undefined;
+				  		setDrillPP($http,'private',coach,id);
+					};
+				  	$scope.saveRating = function(id,rating) {
+						closeModal(sessmodalInstance);
+						sessmodalInstance = undefined;
+				  		saveRating($http,id,rating);
+					};
+					$scope.search = function() {
+						closeModal(sessmodalInstance);
+						sessmodalInstance = undefined;
+						fetchDrills($scope,$http,coach,-1,1,numPerPage);
+					};
+					$scope.sort = function(arrowId,sortField) {
+						closeModal(sessmodalInstance);
+						sessmodalInstance = undefined;
+						$scope.sortField = sortField;
+						$('span[id$="Up"]').each(function () {
+							$('#'+this.id).css('color','#777');
+						});
+						$('span[id$="Down"]').each(function () {
+							$('#'+this.id).css('color','#777');
+						});
+						
+						$('#'+arrowId).css('color','#1c7ebb');
+						fetchDrills($scope,$http,coach,-1,1,numPerPage);
+					};
+		    	}
+
+        ]).controller("sendMessageCtrl", ["$scope", "$http", "mySession", "$rootScope","$modal","$route",
+                function($scope,$http,mySession,$rootScope,$modal) {
+             	var coach = mySession.getData('coach');
+             	$scope.coach = coach;
+             	$scope.message = "";
+             	$scope.subject = "";					fetchCoaches($scope,$http,coach,1);
+    			};
+    			$scope.selectAll = function(filter) {
+    				if(filter == "year") {
+						if($("#year_all").prop("checked") == true) {
+	    					$scope.yearFilter = ['0-5','6-10','11-15','16-20','20+'];    				
+	    					for(var i = 1; i <=5; i++){
+    							$("#year_"+i).prop("checked", true);
+    						} 
+	    				} else {
+	    					for(var i = 1; i <=5; i++){
+    							$("#year_"+i).prop("checked", false);
+	    					}
+	    					$scope.yearFilter = [];    				
+    					}
+    				}
+		   	 		// get all coaches
+					fetchCoaches($scope,$http,coach,1);
+    			};
+    			
+	        }
+        ]).controller("drillsCtrl", ["$scope", "$http", "mySession", "$rootScope","$modal","$route",
+			    function($scope,$http,mySession,$rootScope,$modal) {
+			   	 	var coach = mySession.getData('coach');
+                    
+			   	 	$scope.sessionCartSize = sessionCart.length;
+			   	 	
+					// get all counts
+//		   	 		fetchCounts($scope,$http,coach);
+
+		   	 		// get all drills
+					fetchDrills($scope,$http,coach,-1,1,numPerPage);
+					$scope.select = function(page) {
+						closeModal(sessmodalInstance);
+						sessmodalInstance = undefined;
+						fetchDrills($scope,$http,coach,-1,page,numPerPage);
+	    			};
+	    			$scope.pushToCart = function(id, name) {
+						closeModal(sessmodalInstance);
+						sessmodalInstance = undefined;
+	    				var i = sessionCart.indexOf(id);
+	    				if(i != -1) 
+	    					sessionCart.splice(i, 1);
+	    				else
+	    					sessionCart.push(id);
+	    				$scope.$emit("drillAdded", sessionCart);	
+	    				$scope.sessionCartSize = sessionCart.length;
+	    			};
+	    			
+	    			$scope.inSession = function(id) {
+	    				return (sessionCart.indexOf(id) != -1);
+	    			}
+	    			
+					$scope.openSessionCart = function() {
+	                    sessmodalInstance = $modal.open({
+	                        templateUrl: "views/sessioncart.html",
+	                        controller: "sessionCartCtrl",
+	                        windowClass: "class-with-width"
+	                    });
+	                    sessmodalInstance.result.then(function (result) {
+	        				$scope.sessionCartSize = sessionCart.length;
+	                    	if(result === "session-created") {
+	        		   	 		// get all drills
+	        					fetchDrills($scope,$http,coach,-1,1,numPerPage);
+	        					sessionCart = [];
+	        					$scope.sessionCartSize = sessionCart.length;
+	    						sessmodalInstance = undefined;
+	                    	}
+	                    }, function (result) {
+	        				$scope.sessionCartSize = sessionCart.length;
+							sessmodalInstance = undefined;
+	                    });                
+					};
+
+					$scope.deleteDrill = function(id, name) {
+						closeModal(sessmodalInstance);
+						sessmodalInstance = undefined;
+						
+						bootbox.dialog({
+							  message: "Are you sure you want to delete the drill: " + name,
+							  title: "Delete drill",
+							  className : "class-with-width",
+							  buttons: {
+							    success: {label: "Yes!",className: "btn-success",
+							      callback: function() {
+									$http.post('user/deleteDrill/' +id+'/'+coach.coach_id).
+									success(function(data) {
+										fetchDrills($scope,$http,coach,($scope.drillsInPage-1),$scope.currentPage,numPerPage);
+									});
+							      }
+							    },
+							    danger: {label: "No!",className: "btn-danger",callback: function() {}}
+							  }
+							});						
+					};
+					$scope.setDrillPublic = function(id) {
+						closeModal(sessmodalInstance);
+						sessmodalInstance = undefined;
+						setDrillPP($http,'public',coach,id);
+					};
+				  	$scope.setDrillPrivate = function(id) {
+						closeModal(sessmodalInstance);
+						sessmodalInstance = undefined;
+				  		setDrillPP($http,'private',coach,id);
+					};
+				  	$scope.saveRating = function(id,rating) {
+						closeModal(sessmodalInstance);
+						sessmodalInstance = undefined;
+				  		saveRating($http,id,rating);
+					};
+					$scope.search = function() {
+						closeModal(sessmodalInstance);
+						sessmodalInstance = undefined;
+						fetchDrills($scope,$http,coach,-1,1,numPerPage);
+					};
+					$scope.sort = function(arrowId,sortField) {
+						closeModal(sessmodalInstance);
+						sessmodalInstance = undefined;
+						$scope.sortField = sortField;
+						$('span[id$="Up"]').each(function () {
+							$('#'+this.id).css('color','#777');
+						});
+						$('span[id$="Down"]').each(function () {
+							$('#'+this.id).css('color','#777');
+						});
+						
+						$('#'+arrowId).css('color','#1c7ebb');
+						fetchDrills($scope,$http,coach,-1,1,numPerPage);
+					};
+		    	}
+
+        ]).controller("sendMessageCtrl", ["$scope", "$http", "mySession", "$rootScope","$modal","$route",
+                function($scope,$http,mySession,$rootScope,$modal) {
+             	var coach = mySession.getData('coach');
+             	$scope.coach = coach;
+             	$scope.message = "";
+             	$scope.subject = "";					fetchCoaches($scope,$http,coach,1);
+    			};
+    			$scope.selectAll = function(filter) {
+    				if(filter == "year") {
+						if($("#year_all").prop("checked") == true) {
+	    					$scope.yearFilter = ['0-5','6-10','11-15','16-20','20+'];    				
+	    					for(var i = 1; i <=5; i++){
+    							$("#year_"+i).prop("checked", true);
+    						} 
+	    				} else {
+	    					for(var i = 1; i <=5; i++){
+    							$("#year_"+i).prop("checked", false);
+	    					}
+	    					$scope.yearFilter = [];    				
+    					}
+    				}
+		   	 		// get all coaches
+					fetchCoaches($scope,$http,coach,1);
+    			};
+    			
+	        }
+        ]).controller("drillsCtrl", ["$scope", "$http", "mySession", "$rootScope","$modal","$route",
+			    function($scope,$http,mySession,$rootScope,$modal) {
+			   	 	var coach = mySession.getData('coach');
+                    
+			   	 	$scope.sessionCartSize = sessionCart.length;
+			   	 	
+					// get all counts
+//		   	 		fetchCounts($scope,$http,coach);
+
+		   	 		// get all drills
+					fetchDrills($scope,$http,coach,-1,1,numPerPage);
+					$scope.select = function(page) {
+						closeModal(sessmodalInstance);
+						sessmodalInstance = undefined;
+						fetchDrills($scope,$http,coach,-1,page,numPerPage);
+	    			};
+	    			$scope.pushToCart = function(id, name) {
+						closeModal(sessmodalInstance);
+						sessmodalInstance = undefined;
+	    				var i = sessionCart.indexOf(id);
+	    				if(i != -1) 
+	    					sessionCart.splice(i, 1);
+	    				else
+	    					sessionCart.push(id);
+	    				$scope.$emit("drillAdded", sessionCart);	
+	    				$scope.sessionCartSize = sessionCart.length;
+	    			};
+	    			
+	    			$scope.inSession = function(id) {
+	    				return (sessionCart.indexOf(id) != -1);
+	    			}
+	    			
+					$scope.openSessionCart = function() {
+	                    sessmodalInstance = $modal.open({
+	                        templateUrl: "views/sessioncart.html",
+	                        controller: "sessionCartCtrl",
+	                        windowClass: "class-with-width"
+	                    });
+	                    sessmodalInstance.result.then(function (result) {
+	        				$scope.sessionCartSize = sessionCart.length;
+	                    	if(result === "session-created") {
+	        		   	 		// get all drills
+	        					fetchDrills($scope,$http,coach,-1,1,numPerPage);
+	        					sessionCart = [];
+	        					$scope.sessionCartSize = sessionCart.length;
+	    						sessmodalInstance = undefined;
+	                    	}
+	                    }, function (result) {
+	        				$scope.sessionCartSize = sessionCart.length;
+							sessmodalInstance = undefined;
+	                    });                
+					};
+
+					$scope.deleteDrill = function(id, name) {
+						closeModal(sessmodalInstance);
+						sessmodalInstance = undefined;
+						
+						bootbox.dialog({
+							  message: "Are you sure you want to delete the drill: " + name,
+							  title: "Delete drill",
+							  className : "class-with-width",
+							  buttons: {
+							    success: {label: "Yes!",className: "btn-success",
+							      callback: function() {
+									$http.post('user/deleteDrill/' +id+'/'+coach.coach_id).
+									success(function(data) {
+										fetchDrills($scope,$http,coach,($scope.drillsInPage-1),$scope.currentPage,numPerPage);
+									});
+							      }
+							    },
+							    danger: {label: "No!",className: "btn-danger",callback: function() {}}
+							  }
+							});						
+					};
+					$scope.setDrillPublic = function(id) {
+						closeModal(sessmodalInstance);
+						sessmodalInstance = undefined;
+						setDrillPP($http,'public',coach,id);
+					};
+				  	$scope.setDrillPrivate = function(id) {
+						closeModal(sessmodalInstance);
+						sessmodalInstance = undefined;
+				  		setDrillPP($http,'private',coach,id);
+					};
+				  	$scope.saveRating = function(id,rating) {
+						closeModal(sessmodalInstance);
+						sessmodalInstance = undefined;
+				  		saveRating($http,id,rating);
+					};
+					$scope.search = function() {
+						closeModal(sessmodalInstance);
+						sessmodalInstance = undefined;
+						fetchDrills($scope,$http,coach,-1,1,numPerPage);
+					};
+					$scope.sort = function(arrowId,sortField) {
+						closeModal(sessmodalInstance);
+						sessmodalInstance = undefined;
+						$scope.sortField = sortField;
+						$('span[id$="Up"]').each(function () {
+							$('#'+this.id).css('color','#777');
+						});
+						$('span[id$="Down"]').each(function () {
+							$('#'+this.id).css('color','#777');
+						});
+						
+						$('#'+arrowId).css('color','#1c7ebb');
+						fetchDrills($scope,$http,coach,-1,1,numPerPage);
+					};
+		    	}
+
+        ]).controller("sendMessageCtrl", ["$scope", "$http", "mySession", "$rootScope","$modal","$route",
+                function($scope,$http,mySession,$rootScope,$modal) {
+             	var coach = mySession.getData('coach');
+             	$scope.coach = coach;
+             	$scope.message = "";
+             	$scope.subject = "";					fetchCoaches($scope,$http,coach,1);
+    			};
+    			$scope.selectAll = function(filter) {
+    				if(filter == "year") {
+						if($("#year_all").prop("checked") == true) {
+	    					$scope.yearFilter = ['0-5','6-10','11-15','16-20','20+'];    				
+	    					for(var i = 1; i <=5; i++){
+    							$("#year_"+i).prop("checked", true);
+    						} 
+	    				} else {
+	    					for(var i = 1; i <=5; i++){
+    							$("#year_"+i).prop("checked", false);
+	    					}
+	    					$scope.yearFilter = [];    				
+    					}
+    				}
+		   	 		// get all coaches
+					fetchCoaches($scope,$http,coach,1);
+    			};
+    			
+	        }
+        ]).controller("drillsCtrl", ["$scope", "$http", "mySession", "$rootScope","$modal","$route",
+			    function($scope,$http,mySession,$rootScope,$modal) {
+			   	 	var coach = mySession.getData('coach');
+                    
+			   	 	$scope.sessionCartSize = sessionCart.length;
+			   	 	
+					// get all counts
+//		   	 		fetchCounts($scope,$http,coach);
+
+		   	 		// get all drills
+					fetchDrills($scope,$http,coach,-1,1,numPerPage);
+					$scope.select = function(page) {
+						closeModal(sessmodalInstance);
+						sessmodalInstance = undefined;
+						fetchDrills($scope,$http,coach,-1,page,numPerPage);
+	    			};
+	    			$scope.pushToCart = function(id, name) {
+						closeModal(sessmodalInstance);
+						sessmodalInstance = undefined;
+	    				var i = sessionCart.indexOf(id);
+	    				if(i != -1) 
+	    					sessionCart.splice(i, 1);
+	    				else
+	    					sessionCart.push(id);
+	    				$scope.$emit("drillAdded", sessionCart);	
+	    				$scope.sessionCartSize = sessionCart.length;
+	    			};
+	    			
+	    			$scope.inSession = function(id) {
+	    				return (sessionCart.indexOf(id) != -1);
+	    			}
+	    			
+					$scope.openSessionCart = function() {
+	                    sessmodalInstance = $modal.open({
+	                        templateUrl: "views/sessioncart.html",
+	                        controller: "sessionCartCtrl",
+	                        windowClass: "class-with-width"
+	                    });
+	                    sessmodalInstance.result.then(function (result) {
+	        				$scope.sessionCartSize = sessionCart.length;
+	                    	if(result === "session-created") {
+	        		   	 		// get all drills
+	        					fetchDrills($scope,$http,coach,-1,1,numPerPage);
+	        					sessionCart = [];
+	        					$scope.sessionCartSize = sessionCart.length;
+	    						sessmodalInstance = undefined;
+	                    	}
+	                    }, function (result) {
+	        				$scope.sessionCartSize = sessionCart.length;
+							sessmodalInstance = undefined;
+	                    });                
+					};
+
+					$scope.deleteDrill = function(id, name) {
+						closeModal(sessmodalInstance);
+						sessmodalInstance = undefined;
+						
+						bootbox.dialog({
+							  message: "Are you sure you want to delete the drill: " + name,
+							  title: "Delete drill",
+							  className : "class-with-width",
+							  buttons: {
+							    success: {label: "Yes!",className: "btn-success",
+							      callback: function() {
+									$http.post('user/deleteDrill/' +id+'/'+coach.coach_id).
+									success(function(data) {
+										fetchDrills($scope,$http,coach,($scope.drillsInPage-1),$scope.currentPage,numPerPage);
+									});
+							      }
+							    },
+							    danger: {label: "No!",className: "btn-danger",callback: function() {}}
+							  }
+							});						
+					};
+					$scope.setDrillPublic = function(id) {
+						closeModal(sessmodalInstance);
+						sessmodalInstance = undefined;
+						setDrillPP($http,'public',coach,id);
+					};
+				  	$scope.setDrillPrivate = function(id) {
+						closeModal(sessmodalInstance);
+						sessmodalInstance = undefined;
+				  		setDrillPP($http,'private',coach,id);
+					};
+				  	$scope.saveRating = function(id,rating) {
+						closeModal(sessmodalInstance);
+						sessmodalInstance = undefined;
+				  		saveRating($http,id,rating);
+					};
+					$scope.search = function() {
+						closeModal(sessmodalInstance);
+						sessmodalInstance = undefined;
+						fetchDrills($scope,$http,coach,-1,1,numPerPage);
+					};
+					$scope.sort = function(arrowId,sortField) {
+						closeModal(sessmodalInstance);
+						sessmodalInstance = undefined;
+						$scope.sortField = sortField;
+						$('span[id$="Up"]').each(function () {
+							$('#'+this.id).css('color','#777');
+						});
+						$('span[id$="Down"]').each(function () {
+							$('#'+this.id).css('color','#777');
+						});
+						
+						$('#'+arrowId).css('color','#1c7ebb');
+						fetchDrills($scope,$http,coach,-1,1,numPerPage);
+					};
+		    	}
+
+        ]).controller("sendMessageCtrl", ["$scope", "$http", "mySession", "$rootScope","$modal","$route",
+                function($scope,$http,mySession,$rootScope,$modal) {
+             	var coach = mySession.getData('coach');
+             	$scope.coach = coach;
+             	$scope.message = "";
+             	$scope.subject = "";					fetchCoaches($scope,$http,coach,1);
+    			};
+    			$scope.selectAll = function(filter) {
+    				if(filter == "year") {
+						if($("#year_all").prop("checked") == true) {
+	    					$scope.yearFilter = ['0-5','6-10','11-15','16-20','20+'];    				
+	    					for(var i = 1; i <=5; i++){
+    							$("#year_"+i).prop("checked", true);
+    						} 
+	    				} else {
+	    					for(var i = 1; i <=5; i++){
+    							$("#year_"+i).prop("checked", false);
+	    					}
+	    					$scope.yearFilter = [];    				
+    					}
+    				}
+		   	 		// get all coaches
+					fetchCoaches($scope,$http,coach,1);
+    			};
+    			
+	        }
+        ]).controller("drillsCtrl", ["$scope", "$http", "mySession", "$rootScope","$modal","$route",
+			    function($scope,$http,mySession,$rootScope,$modal) {
+			   	 	var coach = mySession.getData('coach');
+                    
+			   	 	$scope.sessionCartSize = sessionCart.length;
+			   	 	
+					// get all counts
+//		   	 		fetchCounts($scope,$http,coach);
+
+		   	 		// get all drills
+					fetchDrills($scope,$http,coach,-1,1,numPerPage);
+					$scope.select = function(page) {
+						closeModal(sessmodalInstance);
+						sessmodalInstance = undefined;
+						fetchDrills($scope,$http,coach,-1,page,numPerPage);
+	    			};
+	    			$scope.pushToCart = function(id, name) {
+						closeModal(sessmodalInstance);
+						sessmodalInstance = undefined;
+	    				var i = sessionCart.indexOf(id);
+	    				if(i != -1) 
+	    					sessionCart.splice(i, 1);
+	    				else
+	    					sessionCart.push(id);
+	    				$scope.$emit("drillAdded", sessionCart);	
+	    				$scope.sessionCartSize = sessionCart.length;
+	    			};
+	    			
+	    			$scope.inSession = function(id) {
+	    				return (sessionCart.indexOf(id) != -1);
+	    			}
+	    			
+					$scope.openSessionCart = function() {
+	                    sessmodalInstance = $modal.open({
+	                        templateUrl: "views/sessioncart.html",
+	                        controller: "sessionCartCtrl",
+	                        windowClass: "class-with-width"
+	                    });
+	                    sessmodalInstance.result.then(function (result) {
+	        				$scope.sessionCartSize = sessionCart.length;
+	                    	if(result === "session-created") {
+	        		   	 		// get all drills
+	        					fetchDrills($scope,$http,coach,-1,1,numPerPage);
+	        					sessionCart = [];
+	        					$scope.sessionCartSize = sessionCart.length;
+	    						sessmodalInstance = undefined;
+	                    	}
+	                    }, function (result) {
+	        				$scope.sessionCartSize = sessionCart.length;
+							sessmodalInstance = undefined;
+	                    });                
+					};
+
+					$scope.deleteDrill = function(id, name) {
+						closeModal(sessmodalInstance);
+						sessmodalInstance = undefined;
+						
+						bootbox.dialog({
+							  message: "Are you sure you want to delete the drill: " + name,
+							  title: "Delete drill",
+							  className : "class-with-width",
+							  buttons: {
+							    success: {label: "Yes!",className: "btn-success",
+							      callback: function() {
+									$http.post('user/deleteDrill/' +id+'/'+coach.coach_id).
+									success(function(data) {
+										fetchDrills($scope,$http,coach,($scope.drillsInPage-1),$scope.currentPage,numPerPage);
+									});
+							      }
+							    },
+							    danger: {label: "No!",className: "btn-danger",callback: function() {}}
+							  }
+							});						
+					};
+					$scope.setDrillPublic = function(id) {
+						closeModal(sessmodalInstance);
+						sessmodalInstance = undefined;
+						setDrillPP($http,'public',coach,id);
+					};
+				  	$scope.setDrillPrivate = function(id) {
+						closeModal(sessmodalInstance);
+						sessmodalInstance = undefined;
+				  		setDrillPP($http,'private',coach,id);
+					};
+				  	$scope.saveRating = function(id,rating) {
+						closeModal(sessmodalInstance);
+						sessmodalInstance = undefined;
+				  		saveRating($http,id,rating);
+					};
+					$scope.search = function() {
+						closeModal(sessmodalInstance);
+						sessmodalInstance = undefined;
+						fetchDrills($scope,$http,coach,-1,1,numPerPage);
+					};
+					$scope.sort = function(arrowId,sortField) {
+						closeModal(sessmodalInstance);
+						sessmodalInstance = undefined;
+						$scope.sortField = sortField;
+						$('span[id$="Up"]').each(function () {
+							$('#'+this.id).css('color','#777');
+						});
+						$('span[id$="Down"]').each(function () {
+							$('#'+this.id).css('color','#777');
+						});
+						
+						$('#'+arrowId).css('color','#1c7ebb');
+						fet					fetchCoaches($scope,$http,coach,1);
+    			};
+    			$scope.selectAll = function(filter) {
+    				if(filter == "year") {
+						if($("#year_all").prop("checked") == true) {
+	    					$scope.yearFilter = ['0-5','6-10','11-15','16-20','20+'];    				
+	    					for(var i = 1; i <=5; i++){
+    							$("#year_"+i).prop("checked", true);
+    						} 
+	    				} else {
+	    					for(var i = 1; i <=5; i++){
+    							$("#year_"+i).prop("checked", false);
+	    					}
+	    					$scope.yearFilter = [];    				
+    					}
+    				}
+		   	 		// get all coaches
+					fetchCoaches($scope,$http,coach,1);
+    			};
+    			
+	        }
+        ]).controller("drillsCtrl", ["$scope", "$http", "mySession", "$rootScope","$modal","$route",
+			    function($scope,$http,mySession,$rootScope,$modal) {
+			   	 	var coach = mySession.getData('coach');
+                    
+			   	 	$scope.sessionCartSize = sessionCart.length;
+			   	 	
+					// get all counts
+//		   	 		fetchCounts($scope,$http,coach);
+
+		   	 		// get all drills
+					fetchDrills($scope,$http,coach,-1,1,numPerPage);
+					$scope.select = function(page) {
+						closeModal(sessmodalInstance);
+						sessmodalInstance = undefined;
+						fetchDrills($scope,$http,coach,-1,page,numPerPage);
+	    			};
+	    			$scope.pushToCart = function(id, name) {
+						closeModal(sessmodalInstance);
+						sessmodalInstance = undefined;
+	    				var i = sessionCart.indexOf(id);
+	    				if(i != -1) 
+	    					sessionCart.splice(i, 1);
+	    				else
+	    					sessionCart.push(id);
+	    				$scope.$emit("drillAdded", sessionCart);	
+	    				$scope.sessionCartSize = sessionCart.length;
+	    			};
+	    			
+	    			$scope.inSession = function(id) {
+	    				return (sessionCart.indexOf(id) != -1);
+	    			}
+	    			
+					$scope.openSessionCart = function() {
+	                    sessmodalInstance = $modal.open({
+	                        templateUrl: "views/sessioncart.html",
+	                        controller: "sessionCartCtrl",
+	                        windowClass: "class-with-width"
+	                    });
+	                    sessmodalInstance.result.then(function (result) {
+	        				$scope.sessionCartSize = sessionCart.length;
+	                    	if(result === "session-created") {
+	        		   	 		// get all drills
+	        					fetchDrills($scope,$http,coach,-1,1,numPerPage);
+	        					sessionCart = [];
+	        					$scope.sessionCartSize = sessionCart.length;
+	    						sessmodalInstance = undefined;
+	                    	}
+	                    }, function (result) {
+	        				$scope.sessionCartSize = sessionCart.length;
+							sessmodalInstance = undefined;
+	                    });                
+					};
+
+					$scope.deleteDrill = function(id, name) {
+						closeModal(sessmodalInstance);
+						sessmodalInstance = undefined;
+						
+						bootbox.dialog({
+							  message: "Are you sure you want to delete the drill: " + name,
+							  title: "Delete drill",
+							  className : "class-with-width",
+							  buttons: {
+							    success: {label: "Yes!",className: "btn-success",
+							      callback: function() {
+									$http.post('user/deleteDrill/' +id+'/'+coach.coach_id).
+									success(function(data) {
+										fetchDrills($scope,$http,coach,($scope.drillsInPage-1),$scope.currentPage,numPerPage);
+									});
+							      }
+							    },
+							    danger: {label: "No!",className: "btn-danger",callback: function() {}}
+							  }
+							});						
+					};
+					$scope.setDrillPublic = function(id) {
+						closeModal(sessmodalInstance);
+						sessmodalInstance = undefined;
+						setDrillPP($http,'public',coach,id);
+					};
+				  	$scope.setDrillPrivate = function(id) {
+						closeModal(sessmodalInstance);
+						sessmodalInstance = undefined;
+				  		setDrillPP($http,'private',coach,id);
+					};
+				  	$scope.saveRating = function(id,rating) {
+						closeModal(sessmodalInstance);
+						sessmodalInstance = undefined;
+				  		saveRating($http,id,rating);
+					};
+					$scope.search = function() {
+						closeModal(sessmodalInstance);
+						sessmodalInstance = undefined;
+						fetchDrills($scope,$http,coach,-1,1,numPerPage);
+					};
+					$scope.sort = function(arrowId,sortField) {
+						closeModal(sessmodalInstance);
+						sessmodalInstance = undefined;
+						$scope.sortField = sortField;
+						$('span[id$="Up"]').each(function () {
+							$('#'+this.id).css('color','#777');
+						});
+						$('span[id$="Down"]').each(function () {
+							$('#'+this.id).css('color','#777');
+						});
+						
+						$('#'+arrowId).css('color','#1c7ebb');
+						fetchDrills($scope,$http,coach,-1,1,numPerPage);
+					};
+		    	}
+
+        ]).controller("sendMessageCtrl", ["$scope", "$http", "mySession", "$rootScope","$modal","$route",
+                function($scope,$http,mySession,$rootScope,$modal) {
+             	var coach = mySession.getData('coach');
+             	$scope.coach = coach;
+             	$scope.message = "";
+             	$scope.subject = "";					fetchCoaches($scope,$http,coach,1);
+    			};
+    			$scope.selectAll = function(filter) {
+    				if(filter == "year") {
+						if($("#year_all").prop("checked") == true) {
+	    					$scope.yearFilter = ['0-5','6-10','11-15','16-20','20+'];    				
+	    					for(var i = 1; i <=5; i++){
+    							$("#year_"+i).prop("checked", true);
+    						} 
+	    				} else {
+	    					for(var i = 1; i <=5; i++){
+    							$("#year_"+i).prop("checked", false);
+	    					}
+	    					$scope.yearFilter = [];    				
+    					}
+    				}
+		   	 		// get all coaches
+					fetchCoaches($scope,$http,coach,1);
+    			};
+    			
+	        }
+        ]).controller("drillsCtrl", ["$scope", "$http", "mySession", "$rootScope","$modal","$route",
+			    function($scope,$http,mySession,$rootScope,$modal) {
+			   	 	var coach = mySession.getData('coach');
+                    
+			   	 	$scope.sessionCartSize = sessionCart.length;
+			   	 	
+					// get all counts
+//		   	 		fetchCounts($scope,$http,coach);
+
+		   	 		// get all drills
+					fetchDrills($scope,$http,coach,-1,1,numPerPage);
+					$scope.select = function(page) {
+						closeModal(sessmodalInstance);
+						sessmodalInstance = undefined;
+						fetchDrills($scope,$http,coach,-1,page,numPerPage);
+	    			};
+	    			$scope.pushToCart = function(id, name) {
+						closeModal(sessmodalInstance);
+						sessmodalInstance = undefined;
+	    				var i = sessionCart.indexOf(id);
+	    				if(i != -1) 
+	    					sessionCart.splice(i, 1);
+	    				else
+	    					sessionCart.push(id);
+	    				$scope.$emit("drillAdded", sessionCart);	
+	    				$scope.sessionCartSize = sessionCart.length;
+	    			};
+	    			
+	    			$scope.inSession = function(id) {
+	    				return (sessionCart.indexOf(id) != -1);
+	    			}
+	    			
+					$scope.openSessionCart = function() {
+	                    sessmodalInstance = $modal.open({
+	                        templateUrl: "views/sessioncart.html",
+	                        controller: "sessionCartCtrl",
+	                        windowClass: "class-with-width"
+	                    });
+	                    sessmodalInstance.result.then(function (result) {
+	        				$scope.sessionCartSize = sessionCart.length;
+	                    	if(result === "session-created") {
+	        		   	 		// get all drills
+	        					fetchDrills($scope,$http,coach,-1,1,numPerPage);
+	        					sessionCart = [];
+	        					$scope.sessionCartSize = sessionCart.length;
+	    						sessmodalInstance = undefined;
+	                    	}
+	                    }, function (result) {
+	        				$scope.sessionCartSize = sessionCart.length;
+							sessmodalInstance = undefined;
+	                    });                
+					};
+
+					$scope.deleteDrill = function(id, name) {
+						closeModal(sessmodalInstance);
+						sessmodalInstance = undefined;
+						
+						bootbox.dialog({
+							  message: "Are you sure you want to delete the drill: " + name,
+							  title: "Delete drill",
+							  className : "class-with-width",
+							  buttons: {
+							    success: {label: "Yes!",className: "btn-success",
+							      callback: function() {
+									$http.post('user/deleteDrill/' +id+'/'+coach.coach_id).
+									success(function(data) {
+										fetchDrills($scope,$http,coach,($scope.drillsInPage-1),$scope.currentPage,numPerPage);
+									});
+							      }
+							    },
+							    danger: {label: "No!",className: "btn-danger",callback: function() {}}
+							  }
+							});						
+					};
+					$scope.setDrillPublic = function(id) {
+						closeModal(sessmodalInstance);
+						sessmodalInstance = undefined;
+						setDrillPP($http,'public',coach,id);
+					};
+				  	$scope.setDrillPrivate = function(id) {
+						closeModal(sessmodalInstance);
+						sessmodalInstance = undefined;
+				  		setDrillPP($http,'private',coach,id);
+					};
+				  	$scope.saveRating = function(id,rating) {
+						closeModal(sessmodalInstance);
+						sessmodalInstance = undefined;
+				  		saveRating($http,id,rating);
+					};
+					$scope.search = function() {
+						closeModal(sessmodalInstance);
+						sessmodalInstance = undefined;
+						fetchDrills($scope,$http,coach,-1,1,numPerPage);
+					};
+					$scope.sort = function(arrowId,sortField) {
+						closeModal(sessmodalInstance);
+						sessmodalInstance = undefined;
+						$scope.sortField = sortField;
+						$('span[id$="Up"]').each(function () {
+							$('#'+this.id).css('color','#777');
+						});
+						$('span[id$="Down"]').each(function () {
+							$('#'+this.id).css('color','#777');
+						});
+						
+						$('#'+arrowId).css('color','#1c7ebb');
+						fetchDrills($scope,$http,coach,-1,1,numPerPage);
+					};
+		    	}
+
+        ]).controller("sendMessageCtrl", ["$scope", "$http", "mySession", "$rootScope","$modal","$route",
+                function($scope,$http,mySession,$rootScope,$modal) {
+             	var coach = mySession.getData('coach');
+             	$scope.coach = coach;
+             	$scope.message = "";
+             	$scope.subject = "";					fetchCoaches($scope,$http,coach,1);
+    			};
+    			$scope.selectAll = function(filter) {
+    				if(filter == "year") {
+						if($("#year_all").prop("checked") == true) {
+	    					$scope.yearFilter = ['0-5','6-10','11-15','16-20','20+'];    				
+	    					for(var i = 1; i <=5; i++){
+    							$("#year_"+i).prop("checked", true);
+    						} 
+	    				} else {
+	    					for(var i = 1; i <=5; i++){
+    							$("#year_"+i).prop("checked", false);
+	    					}
+	    					$scope.yearFilter = [];    				
+    					}
+    				}
+		   	 		// get all coaches
+					fetchCoaches($scope,$http,coach,1);
+    			};
+    			
+	        }
+        ]).controller("drillsCtrl", ["$scope", "$http", "mySession", "$rootScope","$modal","$route",
+			    function($scope,$http,mySession,$rootScope,$modal) {
+			   	 	var coach = mySession.getData('coach');
+                    
+			   	 	$scope.sessionCartSize = sessionCart.length;
+			   	 	
+					// get all counts
+//		   	 		fetchCounts($scope,$http,coach);
+
+		   	 		// get all drills
+					fetchDrills($scope,$http,coach,-1,1,numPerPage);
+					$scope.select = function(page) {
+						closeModal(sessmodalInstance);
+						sessmodalInstance = undefined;
+						fetchDrills($scope,$http,coach,-1,page,numPerPage);
+	    			};
+	    			$scope.pushToCart = function(id, name) {
+						closeModal(sessmodalInstance);
+						sessmodalInstance = undefined;
+	    				var i = sessionCart.indexOf(id);
+	    				if(i != -1) 
+	    					sessionCart.splice(i, 1);
+	    				else
+	    					sessionCart.push(id);
+	    				$scope.$emit("drillAdded", sessionCart);	
+	    				$scope.sessionCartSize = sessionCart.length;
+	    			};
+	    			
+	    			$scope.inSession = function(id) {
+	    				return (sessionCart.indexOf(id) != -1);
+	    			}
+	    			
+					$scope.openSessionCart = function() {
+	                    sessmodalInstance = $modal.open({
+	                        templateUrl: "views/sessioncart.html",
+	                        controller: "sessionCartCtrl",
+	                        windowClass: "class-with-width"
+	                    });
+	                    sessmodalInstance.result.then(function (result) {
+	        				$scope.sessionCartSize = sessionCart.length;
+	                    	if(result === "session-created") {
+	        		   	 		// get all drills
+	        					fetchDrills($scope,$http,coach,-1,1,numPerPage);
+	        					sessionCart = [];
+	        					$scope.sessionCartSize = sessionCart.length;
+	    						sessmodalInstance = undefined;
+	                    	}
+	                    }, function (result) {
+	        				$scope.sessionCartSize = sessionCart.length;
+							sessmodalInstance = undefined;
+	                    });                
+					};
+
+					$scope.deleteDrill = function(id, name) {
+						closeModal(sessmodalInstance);
+						sessmodalInstance = undefined;
+						
+						bootbox.dialog({
+							  message: "Are you sure you want to delete the drill: " + name,
+							  title: "Delete drill",
+							  className : "class-with-width",
+							  buttons: {
+							    success: {label: "Yes!",className: "btn-success",
+							      callback: function() {
+									$http.post('user/deleteDrill/' +id+'/'+coach.coach_id).
+									success(function(data) {
+										fetchDrills($scope,$http,coach,($scope.drillsInPage-1),$scope.currentPage,numPerPage);
+									});
+							      }
+							    },
+							    danger: {label: "No!",className: "btn-danger",callback: function() {}}
+							  }
+							});						
+					};
+					$scope.setDrillPublic = function(id) {
+						closeModal(sessmodalInstance);
+						sessmodalInstance = undefined;
+						setDrillPP($http,'public',coach,id);
+					};
+				  	$scope.setDrillPrivate = function(id) {
+						closeModal(sessmodalInstance);
+						sessmodalInstance = undefined;
+				  		setDrillPP($http,'private',coach,id);
+					};
+				  	$scope.saveRating = function(id,rating) {
+						closeModal(sessmodalInstance);
+						sessmodalInstance = undefined;
+				  		saveRating($http,id,rating);
+					};
+					$scope.search = function() {
+						closeModal(sessmodalInstance);
+						sessmodalInstance = undefined;
+						fetchDrills($scope,$http,coach,-1,1,numPerPage);
+					};
+					$scope.sort = function(arrowId,sortField) {
+						closeModal(sessmodalInstance);
+						sessmodalInstance = undefined;
+						$scope.sortField = sortField;
+						$('span[id$="Up"]').each(function () {
+							$('#'+this.id).css('color','#777');
+						});
+						$('span[id$="Down"]').each(function () {
+							$('#'+this.id).css('color','#777');
+						});
+						
+						$('#'+arrowId).css('color','#1c7ebb');
+						fetchDrills($scope,$http,coach,-1,1,numPerPage);
+					};
+		    	}
+
+        ]).controller("sendMessageCtrl", ["$scope", "$http", "mySession", "$rootScope","$modal","$route",
+                function($scope,$http,mySession,$rootScope,$modal) {
+             	var coach = mySession.getData('coach');
+             	$scope.coach = coach;
+             	$scope.message = "";
+             	$scope.subject = "";chDrills($scope,$http,coach,-1,1,numPerPage);
+					};
+		    	}
+
+        ]).controller("sendMessageCtrl", ["$scope", "$http", "mySession", "$rootScope","$modal","$route",
+                function($scope,$http,mySession,$rootScope,$modal) {
+             	var coach = mySession.getData('coach');
+             	$scope.coach = coach;
+             	$scope.message = "";
              	$scope.subject = "";
              	$scope.submitMessage = function() {
              			sendMessage($scope,$http); 
@@ -2326,7 +3958,143 @@ function saveRating($http,id,rating) {
                             	//$route.reload();
                             });                
         				};
-            }
+            }					fetchCoaches($scope,$http,coach,1);
+    			};
+    			$scope.selectAll = function(filter) {
+    				if(filter == "year") {
+						if($("#year_all").prop("checked") == true) {
+	    					$scope.yearFilter = ['0-5','6-10','11-15','16-20','20+'];    				
+	    					for(var i = 1; i <=5; i++){
+    							$("#year_"+i).prop("checked", true);
+    						} 
+	    				} else {
+	    					for(var i = 1; i <=5; i++){
+    							$("#year_"+i).prop("checked", false);
+	    					}
+	    					$scope.yearFilter = [];    				
+    					}
+    				}
+		   	 		// get all coaches
+					fetchCoaches($scope,$http,coach,1);
+    			};
+    			
+	        }
+        ]).controller("drillsCtrl", ["$scope", "$http", "mySession", "$rootScope","$modal","$route",
+			    function($scope,$http,mySession,$rootScope,$modal) {
+			   	 	var coach = mySession.getData('coach');
+                    
+			   	 	$scope.sessionCartSize = sessionCart.length;
+			   	 	
+					// get all counts
+//		   	 		fetchCounts($scope,$http,coach);
+
+		   	 		// get all drills
+					fetchDrills($scope,$http,coach,-1,1,numPerPage);
+					$scope.select = function(page) {
+						closeModal(sessmodalInstance);
+						sessmodalInstance = undefined;
+						fetchDrills($scope,$http,coach,-1,page,numPerPage);
+	    			};
+	    			$scope.pushToCart = function(id, name) {
+						closeModal(sessmodalInstance);
+						sessmodalInstance = undefined;
+	    				var i = sessionCart.indexOf(id);
+	    				if(i != -1) 
+	    					sessionCart.splice(i, 1);
+	    				else
+	    					sessionCart.push(id);
+	    				$scope.$emit("drillAdded", sessionCart);	
+	    				$scope.sessionCartSize = sessionCart.length;
+	    			};
+	    			
+	    			$scope.inSession = function(id) {
+	    				return (sessionCart.indexOf(id) != -1);
+	    			}
+	    			
+					$scope.openSessionCart = function() {
+	                    sessmodalInstance = $modal.open({
+	                        templateUrl: "views/sessioncart.html",
+	                        controller: "sessionCartCtrl",
+	                        windowClass: "class-with-width"
+	                    });
+	                    sessmodalInstance.result.then(function (result) {
+	        				$scope.sessionCartSize = sessionCart.length;
+	                    	if(result === "session-created") {
+	        		   	 		// get all drills
+	        					fetchDrills($scope,$http,coach,-1,1,numPerPage);
+	        					sessionCart = [];
+	        					$scope.sessionCartSize = sessionCart.length;
+	    						sessmodalInstance = undefined;
+	                    	}
+	                    }, function (result) {
+	        				$scope.sessionCartSize = sessionCart.length;
+							sessmodalInstance = undefined;
+	                    });                
+					};
+
+					$scope.deleteDrill = function(id, name) {
+						closeModal(sessmodalInstance);
+						sessmodalInstance = undefined;
+						
+						bootbox.dialog({
+							  message: "Are you sure you want to delete the drill: " + name,
+							  title: "Delete drill",
+							  className : "class-with-width",
+							  buttons: {
+							    success: {label: "Yes!",className: "btn-success",
+							      callback: function() {
+									$http.post('user/deleteDrill/' +id+'/'+coach.coach_id).
+									success(function(data) {
+										fetchDrills($scope,$http,coach,($scope.drillsInPage-1),$scope.currentPage,numPerPage);
+									});
+							      }
+							    },
+							    danger: {label: "No!",className: "btn-danger",callback: function() {}}
+							  }
+							});						
+					};
+					$scope.setDrillPublic = function(id) {
+						closeModal(sessmodalInstance);
+						sessmodalInstance = undefined;
+						setDrillPP($http,'public',coach,id);
+					};
+				  	$scope.setDrillPrivate = function(id) {
+						closeModal(sessmodalInstance);
+						sessmodalInstance = undefined;
+				  		setDrillPP($http,'private',coach,id);
+					};
+				  	$scope.saveRating = function(id,rating) {
+						closeModal(sessmodalInstance);
+						sessmodalInstance = undefined;
+				  		saveRating($http,id,rating);
+					};
+					$scope.search = function() {
+						closeModal(sessmodalInstance);
+						sessmodalInstance = undefined;
+						fetchDrills($scope,$http,coach,-1,1,numPerPage);
+					};
+					$scope.sort = function(arrowId,sortField) {
+						closeModal(sessmodalInstance);
+						sessmodalInstance = undefined;
+						$scope.sortField = sortField;
+						$('span[id$="Up"]').each(function () {
+							$('#'+this.id).css('color','#777');
+						});
+						$('span[id$="Down"]').each(function () {
+							$('#'+this.id).css('color','#777');
+						});
+						
+						$('#'+arrowId).css('color','#1c7ebb');
+						fetchDrills($scope,$http,coach,-1,1,numPerPage);
+					};
+		    	}
+
+        ]).controller("sendMessageCtrl", ["$scope", "$http", "mySession", "$rootScope","$modal","$route",
+                function($scope,$http,mySession,$rootScope,$modal) {
+             	var coach = mySession.getData('coach');
+             	$scope.coach = coach;
+             	$scope.message = "";
+             	$scope.subject = "";
         ]).controller("replyMessageCtrl", ["$scope", "$http", "mySession", "$rootScope","$modal","$route",
                 function($scope,$http,mySession,$rootScope,$modal,$route) {
                       var coach = mySession.getData('coach');
