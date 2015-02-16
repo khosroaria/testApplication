@@ -35,7 +35,15 @@ public class Car {
 		this.model = model;
 	}
 	@Override
-
+	this.make = make;
+	}
+	public String getModel() {
+		return model;
+	}
+	public void setModel(String model) {
+		this.model = model;
+	}
+	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
@@ -103,7 +111,15 @@ return true;
 
 
 @Override
-
+this.make = make;
+}
+public String getModel() {
+	return model;
+}
+public void setModel(String model) {
+	this.model = model;
+}
+@Override
 
 public String toString() {
 return "Car [speed=" + speed + ", make=" + make + ", model=" + model
@@ -134,7 +150,15 @@ return true;
 
 @Override
 
-
+this.make = make;
+}
+public String getModel() {
+	return model;
+}
+public void setModel(String model) {
+	this.model = model;
+}
+@Override
 public String toString() {
 return "Car [speed=" + speed + ", make=" + make + ", model=" + model
 	+ "]";
