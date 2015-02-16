@@ -1,4 +1,12 @@
 package testApp;
+	Driver driver1 = new Driver();
+		Driver driver2 = new Driver();
+		Driver driver3 = new Driver();
+		Driver driver4 = new Driver();
+		Driver driver5 = new Driver();
+		
+		Driver driver6 = new Driver();
+		Driver driver7 = new Driver();
 
 public class TestApp {
 
@@ -9,6 +17,14 @@ public class TestApp {
 		
 		System.out.println("bienvenue");
 		
+	Driver driver1 = new Driver();
+		Driver driver2 = new Driver();
+		Driver driver3 = new Driver();
+		Driver driver4 = new Driver();
+		Driver driver5 = new Driver();
+		
+		Driver driver6 = new Driver();
+		Driver driver7 = new Driver();
 
 		Car car = new Car();
 
@@ -21,9 +37,33 @@ public class TestApp {
 		Driver driver6 = new Driver();
 		Driver driver7 = new Driver();
 
+			Driver driver1 = new Driver();
+		Driver driver2 = new Driver();
+		Driver driver3 = new Driver();
+		Driver driver4 = new Driver();
+		Driver driver5 = new Driver();
 		
+		Driver driver6 = new Driver();
+		Driver driver7 = new Driver();
+
 
 
 	}
-	
+		Driver driver1 = new Driver();
+		Driver driver2 = new Driver();
+		Driver driver3 = new Driver();
+		Driver driver4 = new Driver();
+		Driver driver5 = new Driver();
+		
+		Driver driver6 = new Driver();
+		Driver driver7 = new Driver();
+
 }
+	Driver driver1 = new Driver();
+		Driver driver2 = new Driver();
+		Driver driver3 = new Driver();
+		Driver driver4 = new Driver();
+		Driver driver5 = new Driver();
+		
+		Driver driver6 = new Driver();
+		Driver driver7 = new Driver();
