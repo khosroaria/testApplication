@@ -9,4 +9,4 @@ public class Driver {
 private String s;
 
 
-private String s;
+private String sn;
